@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Polish Text Formatter Tool</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            :root {
+                font-family: sans-serif;
+            }
+
+            body {
+                margin: 0;
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+                min-height: 100dvh;
+                padding: 1rem;
+
+                @media (width < 768px) { flex-direction: column }
+            }
+
+            .block {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: .5rem;
+
+                textarea { flex: 1; resize: none; height: 100% }
+            }
+        </style>
+    </head>
+    <body>
+        <section class="block">
+            <label for="input">Input</label>
+            <textarea id="input"></textarea>
+        </section>
+
+        <section class="block">
+            <label for="output">Output</label>
+            <textarea id="output" readonly></textarea>
+        </section>
+
+        <script type="module">
+            import { format } from './formatting.js'
+
+            const input = document.getElementById('input')
+            const output = document.getElementById('output')
+
+            input.addEventListener('input', () => output.value = format(input.value))
+        </script>
+    </body>
+</html>
