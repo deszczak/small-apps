@@ -108,8 +108,8 @@ export const punctuation = (text) => {
     .replace(PATTERNS.codeBlock, save)
     .replace(PATTERNS.inlineCode, save)
     .replace(PATTERNS.trailingSpaces, (_, sp, nl) => save(sp) + nl)
-    .replace(/\s+([,.!?;:])/g, '$1')
-    .replace(/([,.!?;:])\s{2,}(?!\r?\n)/g, '$1 ')
+    .replace(/[^\S\r\n]+([,.!?;:])/g, '$1')
+    .replace(/([,.!?;:])[^\S\r\n]{2,}/g, '$1 ')
 
   return restore(text)
 }

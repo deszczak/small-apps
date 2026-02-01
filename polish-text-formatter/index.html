@@ -12,6 +12,7 @@
 
             :root {
                 font-family: sans-serif;
+                color-scheme: light dark;
             }
 
             body {
@@ -33,9 +34,30 @@
 
                 textarea { flex: 1; resize: none; height: 100% }
             }
+
+            #notification {
+                position: fixed;
+                bottom: 2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: light-dark(rgba(0, 0, 0, .85), rgba(255, 255, 255, .85));
+                backdrop-filter: blur(1px);
+                color: light-dark(white, black);
+                padding: .8rem 2rem .7rem;
+                border-radius: .25rem;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+
+            #notification.show {
+                opacity: 1;
+            }
         </style>
     </head>
     <body>
+        <div id="notification">Formatted text copied to clipboard!</div>
+
         <section class="block">
             <label for="input">Input</label>
             <textarea id="input"></textarea>
@@ -51,8 +73,32 @@
 
             const input = document.getElementById('input')
             const output = document.getElementById('output')
+            const notification = document.getElementById('notification')
+            let notificationTimeout
 
-            input.addEventListener('input', () => output.value = format(input.value))
+            function copyAndNotify(text) {
+                if (!text) return
+
+                navigator.clipboard.writeText(text).then(() => {
+                    notification.classList.add('show')
+
+                    clearTimeout(notificationTimeout)
+                    notificationTimeout = setTimeout(() => {
+                        notification.classList.remove('show')
+                    }, 2000)
+                }).catch(err => console.error('Clipboard write failed:', err))
+            }
+
+            input.addEventListener('input', () => {
+                const formatted = format(input.value)
+                output.value = formatted
+                copyAndNotify(formatted)
+            })
+
+            output.addEventListener('click', () => {
+                output.select()
+                copyAndNotify(output.value)
+            })
         </script>
     </body>
 </html>
